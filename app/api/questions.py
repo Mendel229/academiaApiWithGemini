@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from typing import List
 from sqlalchemy.orm import Session
 
-from app.models.question import Question, QuestionCreate, QuestionDB  # Importe Question (Pydantic) et QuestionDB (SQLAlchemy)
+from app.models.question import Question, QuestionCreate, QuestionDB
 from app.services.question_service import QuestionService
 from app.database import get_db
 

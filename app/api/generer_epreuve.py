@@ -10,7 +10,7 @@ import traceback
 
 router = APIRouter()
 
-@router.post("/generer_epreuve/")
+@router.post("/generer_epreuve/", tags=["Générer une épreuve & sa grille"])
 async def generer_epreuve(
     pdf_file: UploadFile = File(...),
     constraints: str = Form(...)
