@@ -16,7 +16,7 @@ async def analyser_epreuve_avec_grille(
 
     try:
         pdf_text = extract_text_from_pdf(pdf_file.file)
-        resultats_balisage = baliser_epreuve(pdf_text)
+        resultats_balisage = await baliser_epreuve(pdf_text)
         return {"epreuve_balisee": resultats_balisage["epreuve_balisee"]}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erreur lors de l'analyse et du balisage de l'épreuve: {str(e)}")

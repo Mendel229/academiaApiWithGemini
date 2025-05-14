@@ -1,4 +1,3 @@
-# app/services/save_epreuve_service.py
 import re
 from sqlalchemy.orm import Session
 from app.models.epreuve import EpreuveDB
@@ -10,7 +9,7 @@ class EnregistrementService:
     def __init__(self, db: Session):
         self.db = db
 
-    def enregistrer_epreuve(self, texte_genere: str) -> EpreuveDB | None:
+    def enregistrer_epreuve(self, texte_genere: str, id_professeur: int) -> EpreuveDB | None:
         try:
             titre_match = re.search(r'titre:\s*Épreuve de (.+?)\s*-\s*(.+)', texte_genere)
             duree_match = re.search(r'duree:\s*(.+)', texte_genere)
@@ -20,7 +19,7 @@ class EnregistrementService:
             niveau = titre_match.group(2).strip()
             duree = duree_match.group(1).strip()
 
-            db_epreuve = EpreuveDB(titre=f"Épreuve de {matiere} - {niveau}", duree=duree, niveau=niveau)
+            db_epreuve = EpreuveDB(titre=f"Épreuve de {matiere} - {niveau}", duree=duree, niveau=niveau, id_professeur=id_professeur) # Ajout id_professeur
             self.db.add(db_epreuve)
             self.db.commit()
             self.db.refresh(db_epreuve)

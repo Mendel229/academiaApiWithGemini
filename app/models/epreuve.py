@@ -1,16 +1,15 @@
-# app/models/epreuve.py
-from sqlalchemy import String, Integer, DateTime
+from sqlalchemy import String, Integer, DateTime, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql import func
 from datetime import datetime
-from typing import List, TYPE_CHECKING
-from pydantic import BaseModel
+from typing import List, TYPE_CHECKING, Optional
+from pydantic import BaseModel, ConfigDict
+from app.models.professeur import ProfesseurDB
 from app.models.base import Base
 
 
 if TYPE_CHECKING:
     from app.models.question import QuestionDB
-
 
 # ----- Schémas Pydantic -----
 
@@ -18,6 +17,9 @@ class EpreuveBase(BaseModel):
     titre: str
     duree: str
     niveau: str
+    id_professeur: Optional[int]
+
+    model_config = ConfigDict(from_attributes=True)
 
 class EpreuveCreate(EpreuveBase):
     pass
@@ -25,9 +27,7 @@ class EpreuveCreate(EpreuveBase):
 class Epreuve(EpreuveBase):
     id_epreuve: int
 
-    model_config = {
-        "from_attributes": True
-    }
+    model_config = ConfigDict(from_attributes=True)
 
 
 class EpreuveDB(Base):
@@ -35,8 +35,17 @@ class EpreuveDB(Base):
 
     id_epreuve: Mapped[int] = mapped_column(primary_key=True, index=True)
     titre: Mapped[str] = mapped_column(String, index=True)
-    duree: Mapped[str] = mapped_column(String)
+    duree: Mapped[str] = mapped_column(String, index=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=func.now())
-    niveau: Mapped[int] = mapped_column(String)
+    niveau: Mapped[str] = mapped_column(String, index=True)
+    id_professeur: Mapped[Optional[int]] = mapped_column(Integer, ForeignKey("professeur.id"))
 
     questions: Mapped[List["QuestionDB"]] = relationship("QuestionDB", back_populates="epreuve")
+
+
+# ----- Schémas Pydantic -----
+
+
+class EpreuveTexte(BaseModel):
+    texte_epreuve: str
+    id_professeur: Optional[int]

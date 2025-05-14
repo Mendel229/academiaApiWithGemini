@@ -8,26 +8,82 @@ async def generer_grille(epreuve_text: str, prompt_grille: str = None) -> str:
     """
     model = load_gemini_model()
     prompt_base = f"""
-    Analyse le texte de l'épreuve suivant et génère une grille de correction détaillée au format JSON.
-    La grille doit contenir une liste d'exercices. Pour chaque exercice :
-    - "numero": Le numéro de l'exercice (si identifiable).
-    - "total_points": Le nombre total de points pour cet exercice (si identifiable).
-    - "instructions": Les instructions spécifiques pour cet exercice (si présentes).
-    - "questions": Une liste de questions dans cet exercice. Pour chaque question :
-        - "question": Le texte exact de la question.
-        - "type": Le type de question ("ouverte", "choix multiple", etc.).
-        - "reponse_attendue": La réponse attendue (la plus précise possible). Pour les QCM, inclure les options et indiquer la bonne réponse.
-        - "bareme": Le nombre de points attribués à cette question.
+Tu es un expert en génération d'épreuves techniques. 
 
-    Tente d'identifier la structure de l'épreuve (exercices, numéros de questions, barèmes partiels).
-    Sois précis et concis dans les réponses attendues.
+À partir du texte d'épreuve brute fourni, reformate-le **strictement** selon ces règles :
 
-    Texte de l'épreuve :
-    {epreuve_text}
+### 🔧 Format OBLIGATOIRE :
+```plaintext
+epreuve_debut
+  titre: Épreuve de [MATIÈRE] - [NIVEAU]
+  duree: [DURÉE]
+  exo_debut
+    titre: [TITRE EXERCICE]
+    type: QCM | code | ouverte
+    consigne: null
+    q_debut
+      type: QCM | code | ouverte
+      contenu: [ÉNONCÉ COMPLET]
+      opt: a) [Option 1] (si QCM)
+      opt: b) [Option 2]
+      opt: c) [Option 3]
+      opt: d) [Option 4]
+    q_fin
+    [autres questions...]
+  exo_fin
+  [autres exercices...]
+epreuve_fin
 
-    Grille de correction (JSON) :
-    """
+grille_debut
+  ex: 1 | q: 1 | type: QCM | rep: [a-d] | bareme: [POINTS]
+  ex: 1 | q: 2 | type: code | attendu: [CRITÈRE 1] | bareme: [POINTS]
+  ex: 1 | q: 2 | type: code | attendu: [CRITÈRE 2] | bareme: [POINTS]
+  [autres réponses...]
+grille_fin
+📜 Texte source à convertir :
+\"\"\"{epreuve_text}\"\"\"
 
+⚠️ Règles IMPÉRATIVES :
+Structure :
+
+Titre exactement comme : Épreuve de [Matière] - [Niveau]
+
+consigne: null si aucune consigne spécifique
+
+Pour les QCM : 4 options obligatoires (a-d)
+
+Questions de code :
+
+Tout l'énoncé doit être dans contenu: (pas de balise code:)
+
+Découper les attendus en sous-critères dans la grille (1 par ligne)
+
+Grille de correction :
+
+Barème total = 20 points
+
+Pour les questions complexes : détailler les attendus (ex: "Constructeur fonctionnel", "Méthode afficherInfos()")
+
+Toujours préciser type: (QCM/code/ouverte)
+
+Balises INTERDITES :
+
+Ne jamais utiliser code: dans les questions
+
+Pas de texte hors balises
+
+📌 Exemple de sortie VALIDE (extrait) :
+q_debut
+  type: code
+  contenu: Créez une classe Rectangle avec attributs longueur/largeur...
+q_fin
+
+grille_debut
+  ex: 1 | q: 1 | type: code | attendu: Attributs private corrects | bareme: 2
+  ex: 1 | q: 1 | type: code | attendu: Constructeur initialisant les attributs | bareme: 2
+grille_fin
+❌ Ne pas inclure : commentaires, explications, ou texte hors balises.
+"""   
     if prompt_grille:
         prompt_final = f"{prompt_base}\n\nInstructions supplémentaires du professeur : {prompt_grille}"
     else:

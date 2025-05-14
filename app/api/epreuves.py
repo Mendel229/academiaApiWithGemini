@@ -1,16 +1,26 @@
 from fastapi import APIRouter, Depends, HTTPException
 from typing import List
 from sqlalchemy.orm import Session
-
+# from app.security import get_current_user # Si tu avais un système d'authentification
 from app.models.epreuve import Epreuve, EpreuveCreate, EpreuveDB  # Importe Epreuve (Pydantic) et EpreuveDB (SQLAlchemy)
 from app.services.epreuve_service import EpreuveService
 from app.database import get_db
+# from app.models.user import User # Si tu avais un modèle User
 
 router = APIRouter(prefix="/epreuves", tags=["Epreuves"])
 
 @router.post("/", response_model=Epreuve, status_code=201)
-async def creer_epreuve(epreuve_in: EpreuveCreate, db: Session = Depends(get_db)):
+async def creer_epreuve(
+    epreuve_in: EpreuveCreate,
+    db: Session = Depends(get_db),
+    # current_user: User = Depends(get_current_user) # Si tu avais l'authentification
+):
+    """
+    Crée une nouvelle épreuve, associée à l'utilisateur actuellement authentifié (professeur).
+    """
     epreuve_service = EpreuveService(db)
+    # epreuve_in.id_professeur = current_user.id # Si tu avais l'authentification
+    # Pour l'instant, on suppose que l'id_professeur est fourni dans le schéma EpreuveCreate
     return epreuve_service.creer(epreuve_in)
 
 @router.get("/", response_model=List[Epreuve])
