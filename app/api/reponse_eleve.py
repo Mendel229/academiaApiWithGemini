@@ -5,55 +5,48 @@ from sqlalchemy.orm import Session
 from app.models.reponse_eleve import ReponseEleveDB, ReponseEleveCreate, ReponseEleve
 from app.services.reponse_eleve_service import ReponseEleveService
 from app.database import get_db
+from fastapi.responses import JSONResponse
+from fastapi.encoders import jsonable_encoder
+from app.utils.format_reponse import create_response
 
 router = APIRouter(prefix="/reponses", tags=["Reponses Eleves"])
 
-@router.post("/", response_model=ReponseEleve, status_code=201)
+@router.post("/", status_code=201)
 async def creer_reponse_eleve(reponse_in: ReponseEleveCreate, db: Session = Depends(get_db)):
-    """
-    Crée une nouvelle réponse d'élève.
-    """
     reponse_service = ReponseEleveService(db)
-    return reponse_service.enregistrer_reponse_eleve(reponse_in)
+    reponse = reponse_service.enregistrer_reponse_eleve(reponse_in)
+    reponse_json = jsonable_encoder(reponse)  # <-- encodage JSON
+    return create_response(True, 201, reponse_json)
 
-@router.get("/{id_reponse}", response_model=ReponseEleve)
+@router.get("/{id_reponse}")
 async def lire_reponse_eleve(id_reponse: int, db: Session = Depends(get_db)):
-    """
-    Récupère une réponse d'élève par son ID.
-    """
     reponse_service = ReponseEleveService(db)
     reponse = reponse_service.lire(id_reponse)
     if reponse is None:
-        raise HTTPException(status_code=404, detail="Réponse de l'élève non trouvée")
-    return reponse
+        return create_response(False, 404, "Réponse de l'élève non trouvée")
+    reponse_json = jsonable_encoder(reponse)  # <-- encodage JSON
+    return create_response(True, 200, reponse_json)
 
-@router.get("/", response_model=List[ReponseEleve])
+@router.get("/")
 async def lire_toutes_les_reponses_eleves(db: Session = Depends(get_db)):
-    """
-    Récupère toutes les réponses des élèves.
-    """
     reponse_service = ReponseEleveService(db)
     reponses = reponse_service.lire_tous()
-    return reponses
+    reponses_json = jsonable_encoder(reponses)  # <-- encodage JSON
+    return create_response(True, 200, reponses_json)
 
-@router.put("/{id_reponse}", response_model=ReponseEleve)
+@router.put("/{id_reponse}")
 async def mettre_a_jour_reponse_eleve(id_reponse: int, reponse_in: ReponseEleveCreate, db: Session = Depends(get_db)):
-    """
-    Met à jour une réponse d'élève existante.
-    """
     reponse_service = ReponseEleveService(db)
     reponse = reponse_service.mettre_a_jour(id_reponse, reponse_in)
     if reponse is None:
-        raise HTTPException(status_code=404, detail="Réponse de l'élève non trouvée")
-    return reponse
+        return create_response(False, 404, "Réponse de l'élève non trouvée")
+    reponse_json = jsonable_encoder(reponse)  # <-- encodage JSON
+    return create_response(True, 200, reponse_json)
 
-@router.delete("/{id_reponse}", status_code=204)
+@router.delete("/{id_reponse}")
 async def supprimer_reponse_eleve(id_reponse: int, db: Session = Depends(get_db)):
-    """
-    Supprime une réponse d'élève par son ID.
-    """
     reponse_service = ReponseEleveService(db)
     reponse = reponse_service.supprimer(id_reponse)
     if not reponse:
-        raise HTTPException(status_code=404, detail="Réponse de l'élève non trouvée")
-    return None
+        return create_response(False, 404, "Réponse de l'élève non trouvée")
+    return create_response(True, 204, "Réponse de l'élève supprimée")

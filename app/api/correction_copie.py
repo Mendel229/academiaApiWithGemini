@@ -1,21 +1,17 @@
 from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
-from typing import Optional
 
 from app.database import get_db
 from app.services.correction_service import CorrectionService
-from app.models.copie_numerique import CopieNumeriqueDB, CopieNumerique
+from app.models.copie_numerique import CopieNumeriqueDB
+from app.utils.format_reponse import create_response
 
 router = APIRouter(prefix="/corrections", tags=["Corrections copie numérique"])
 
 
-@router.post("/copies/{id_copie}/corriger", response_model=CopieNumerique)
-async def corriger_copie_endpoint(
-    id_copie: int, db: Session = Depends(get_db)
-) -> CopieNumerique:
-    """
-    Déclenche la correction d'une copie numérique spécifique.
-    """
+@router.post("/copies/{id_copie}/corriger")
+async def corriger_copie_endpoint(id_copie: int, db: Session = Depends(get_db)):
     correction_service = CorrectionService(db)
     note_finale = correction_service.corriger_copie(id_copie)
     if note_finale is None:
@@ -30,12 +26,12 @@ async def corriger_copie_endpoint(
         .first()
     )
     if copie_numerique_db:
-        # Mise à jour de la copie numérique avec la note finale et le statut
         copie_numerique_db.note_finale = note_finale
-        copie_numerique_db.statut = True  # Marquer la copie comme corrigée
+        copie_numerique_db.statut = True
         db.commit()
         db.refresh(copie_numerique_db)
-        return CopieNumerique.from_orm(copie_numerique_db)
+        data = jsonable_encoder(copie_numerique_db)
+        return create_response(True, 200, data)
     else:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
