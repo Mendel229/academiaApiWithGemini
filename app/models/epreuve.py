@@ -41,6 +41,7 @@ class EpreuveDB(Base):
     id_professeur: Mapped[Optional[int]] = mapped_column(Integer, ForeignKey("professeur.id"))
 
     questions: Mapped[List["QuestionDB"]] = relationship("QuestionDB", back_populates="epreuve")
+    copies_numeriques = relationship("CopieNumeriqueDB", back_populates="epreuve")
 
 
 # ----- Schémas Pydantic -----

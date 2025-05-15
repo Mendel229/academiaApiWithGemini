@@ -9,6 +9,7 @@ from datetime import datetime
 if TYPE_CHECKING:
     from app.models.epreuve import EpreuveDB
     from app.models.bonne_reponse import BonneReponseDB
+    from app.models.reponse_eleve import ReponseEleveDB
 
 # ----- Schémas Pydantic -----
 
@@ -45,4 +46,7 @@ class QuestionDB(Base):
     epreuve: Mapped["EpreuveDB"] = relationship("EpreuveDB", back_populates="questions")
     bonnes_reponses: Mapped[List["BonneReponseDB"]] = relationship(
         "BonneReponseDB", back_populates="question", cascade="all, delete-orphan"
+    )
+    reponses_eleve: Mapped[List["ReponseEleveDB"]] = relationship(
+    "ReponseEleveDB", back_populates="question", cascade="all, delete-orphan"
     )
