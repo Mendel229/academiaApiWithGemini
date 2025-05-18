@@ -53,3 +53,18 @@ async def supprimer_epreuve(id_epreuve: int, db: Session = Depends(get_db)):
     if not success:
         raise HTTPException(status_code=404, detail="Épreuve non trouvée")
     return create_response(True, 204, "Épreuve supprimée avec succès")
+
+@router.get("/professeur/{id_professeur}")
+async def lire_epreuves_par_professeur(id_professeur: int, db: Session = Depends(get_db)):
+    epreuve_service = EpreuveService(db)
+    epreuves = epreuve_service.lire_par_professeur(id_professeur)
+
+    if not epreuves:
+        # Optionnel: Renvoyer 404 si aucun épreuve n'est trouvée pour ce professeur
+        # ou renvoyer une liste vide avec un message de succès
+        # raise HTTPException(status_code=404, detail="Aucune épreuve trouvée pour ce professeur")
+         return create_response(True, 200, f"Aucune épreuve trouvée pour le professeur ID {id_professeur}")
+
+
+    epreuves_json = jsonable_encoder(epreuves) # encode la liste d'objets
+    return create_response(True, 200, epreuves_json)

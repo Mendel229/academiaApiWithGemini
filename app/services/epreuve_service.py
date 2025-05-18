@@ -31,6 +31,12 @@ class EpreuveService:
         epreuves = self.db.query(EpreuveDB).all()
         return [Epreuve.from_orm(epreuve) for epreuve in epreuves]
 
+    def lire_par_professeur(self, id_professeur: int) -> List[Epreuve]:
+        """Récupère toutes les épreuves pour un professeur donné."""
+        epreuves = self.db.query(EpreuveDB).filter(EpreuveDB.id_professeur == id_professeur).all()
+        # Convertit chaque objet EpreuveDB en objet Epreuve (Pydantic)
+        return [Epreuve.from_orm(epreuve) for epreuve in epreuves]
+
     def mettre_a_jour(self, id_epreuve: int, epreuve_in: EpreuveCreate) -> Epreuve | None:
         """Met à jour une épreuve existante."""
         db_epreuve = self.db.query(EpreuveDB).filter(EpreuveDB.id_epreuve == id_epreuve).first()

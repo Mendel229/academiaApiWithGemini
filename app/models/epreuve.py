@@ -17,6 +17,7 @@ class EpreuveBase(BaseModel):
     titre: str
     duree: str
     niveau: str
+    created_at: datetime
     id_professeur: Optional[int]
 
     model_config = ConfigDict(from_attributes=True)
