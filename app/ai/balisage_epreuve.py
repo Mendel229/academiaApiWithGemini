@@ -68,6 +68,20 @@ async def baliser_epreuve(texte_epreuve: str) -> dict:
     - Génère la grille de correction en indiquant l'exercice, la question, le type, la réponse correcte (pour les QCM), les indications de la réponse attendue (pour les questions ouvertes et de code), et le barème.
     - **N'ajoute aucun texte d'introduction ou de conclusion.**
     - Si certaines informations ne sont pas clairement identifiables, ne les inclus pas.
+    - Si la grille de correction ne contient pas de bareme tu peux uniquement dans ce cas ajouter le bareme:
+      Ne répartis pas les points exercice par exercice, mais bien sur l’ensemble des questions de l’épreuve
+
+      Évite autant que possible les décimales «complexes» (ex. 2,33 ou 4,17).
+
+      Tu peux utiliser uniquement des fractions en quart de point pour plus de précision :
+
+          0,25 point (¼),
+
+          0,50 point (½),
+
+          0,75 point (¾).
+
+      L’objectif est de conserver un barème clair, équilibré et pédagogique, tout en respectant strictement le total de 20 points
 
     Résultat balisé :
     """

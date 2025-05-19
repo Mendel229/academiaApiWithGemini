@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api import epreuves, questions, bonnes_reponses, generer_epreuve, save_epreuve, grille_epreuve, analyser_epgrille, copies, reponse_eleve, correction_copie
+from app.api import epreuves, questions, bonnes_reponses, generer_epreuve, save_epreuve, grille_epreuve, analyser_epgrille, copies, reponse_eleve, correction_copie, save_epreuve_baliser
 
 from app.models import relationships
 from app.models.base import Base
@@ -32,6 +32,7 @@ app.include_router(questions.router)
 app.include_router(bonnes_reponses.router)
 app.include_router(generer_epreuve.router)
 app.include_router(save_epreuve.router)
+app.include_router(save_epreuve_baliser.router)
 app.include_router(grille_epreuve.router)
 app.include_router(analyser_epgrille.router)
 app.include_router(copies.router)

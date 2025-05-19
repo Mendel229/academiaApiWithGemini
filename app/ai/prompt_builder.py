@@ -25,7 +25,7 @@ def build_prompt_from_constraints(course_content: str, constraints: dict) -> str
 
 Ne répartis pas les points exercice par exercice, mais bien sur l’ensemble des questions de l’épreuve.
 
-Évite autant que possible les décimales « complexes » (ex. 2,33 ou 4,17).
+Évite autant que possible les décimales «complexes» (ex. 2,33 ou 4,17).
 
 Tu peux utiliser uniquement des fractions en quart de point pour plus de précision :
 
