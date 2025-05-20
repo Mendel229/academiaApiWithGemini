@@ -43,6 +43,14 @@ async def lire_question(id_question: int, db: Session = Depends(get_db)):
         return create_response(False, 404, "Question non trouvée")
     return create_response(True, 200, jsonable_encoder(question))
 
+@router.get("/showQuesByEp/{id_epreuve}")
+async def get_quest_by_ep(id_epreuve: int, db: Session = Depends(get_db)):
+    question_service = QuestionService(db)
+    questions = question_service.get_quest_by_ep(id_epreuve)
+    if questions is None:
+        return create_response(False, 404, "Epreuve non trouvée")
+    return create_response(True, 200, jsonable_encoder(questions))
+
 @router.put("/{id_question}")
 async def mettre_a_jour_question(id_question: int, question_in: QuestionCreate, db: Session = Depends(get_db)):
     question_service = QuestionService(db)

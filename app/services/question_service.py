@@ -19,6 +19,12 @@ class QuestionService:
         if question:
             return Question.from_orm(question)
         return None
+    
+    def get_quest_by_ep(self, id_epreuve: int) -> List[Question]:
+        questions = self.db.query(QuestionDB).filter(QuestionDB.id_epreuve == id_epreuve).all()
+        if questions:
+            return [Question.from_orm(question) for question in questions]
+        return None
 
     def lire_tous(self) -> List[Question]:
         questions = self.db.query(QuestionDB).all()
