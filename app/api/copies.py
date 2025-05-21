@@ -14,7 +14,13 @@ router = APIRouter(prefix="/copies", tags=["Copies Numériques"])
 async def creer_copie(copie_in: CopieNumeriqueCreate, db: Session = Depends(get_db)):
     copie_service = CopieNumeriqueService(db)
     copie = copie_service.enregistrer_copie_numerique(copie_in)
-    return create_response(True, 201, "Copie numérique créée avec succès")
+
+    # On crée la réponse en incluant l'id_copie_numerique retourné par la DB
+    data = {
+        "message": "Copie numérique créée avec succès",
+        "id_copie_numerique": copie.id_copie_numerique
+    }
+    return create_response(True, 201, data)
 
 
 @router.get("/{id_copie}")
