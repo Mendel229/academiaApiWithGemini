@@ -2,7 +2,7 @@ from sqlalchemy import Integer, DateTime, ForeignKey, Boolean, Float
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql import func
 from datetime import datetime
-from typing import Optional, List, TYPE_CHECKING
+from typing import Optional, List, TYPE_CHECKING, Dict
 from pydantic import BaseModel, ConfigDict
 
 from app.models.base import Base
@@ -69,4 +69,14 @@ class CopieNumeriqueDB(Base):
     reponses: Mapped[List["ReponseEleveDB"]] = relationship(
     "ReponseEleveDB", back_populates="copie_numerique", cascade="all, delete-orphan"
     )
+
+
+
+class SoumissionCopieNumerique(BaseModel):
+    id_etudiant: int
+    id_epreuve: int
+    reponses_qcm: Dict[int, str]       # id_question: réponse choisie
+    reponses_code: List[str]           # Réponses dans l’ordre des questions code
+    reponses_courtes: List[str]        # Réponses dans l’ordre des questions ouvertes
+
 

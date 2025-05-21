@@ -3,6 +3,7 @@ from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 
 from app.models.copie_numerique import CopieNumeriqueCreate, CopieNumeriqueUpdate
+from app.models.soumission_copie import SoumissionCopieNumerique
 from app.services.copie_numerique_service import CopieNumeriqueService
 from app.database import get_db
 from app.utils.format_reponse import create_response
@@ -21,6 +22,20 @@ async def creer_copie(copie_in: CopieNumeriqueCreate, db: Session = Depends(get_
         "id_copie_numerique": copie.id_copie_numerique
     }
     return create_response(True, 201, data)
+
+@router.post("/soumettre-copie")
+def soumettre_copie(
+    soumission: SoumissionCopieNumerique,
+    db: Session = Depends(get_db)
+):
+    service = CopieNumeriqueService(db)
+    return service.enregistrer_copie_entiere(
+        id_etudiant=soumission.id_etudiant,
+        id_epreuve=soumission.id_epreuve,
+        reponses_qcm=soumission.reponses_qcm,
+        reponses_code=soumission.reponses_code,
+        reponses_courtes=soumission.reponses_courtes
+    )
 
 
 @router.get("/{id_copie}")
