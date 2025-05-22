@@ -59,10 +59,10 @@ class CorrectionService:
 
         try:
             #  Appeler le modèle chargé pour obtenir la réponse
-            response = self.model.generate_content(prompt)
+            response = self.model.generate_content(prompt, generation_config={"temperature": 0.0})
             note_str = response.text
             # Extraction de la note (peut nécessiter une logique plus robuste)
-            match = re.search(r"Note de l'étudiant:\s*([\d.]+)", note_str, re.IGNORECASE)
+            match = re.search(r"Note de l'étudiant:\s*\[?([\d.,]+)\]?", note_str, re.IGNORECASE)
             if match:
                 note = float(match.group(1))
                 return note

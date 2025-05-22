@@ -23,7 +23,7 @@ async def creer_copie(copie_in: CopieNumeriqueCreate, db: Session = Depends(get_
     }
     return create_response(True, 201, data)
 
-@router.post("/soumettre-copie")
+@router.post("/soumettre_copie")
 def soumettre_copie(
     soumission: SoumissionCopieNumerique,
     db: Session = Depends(get_db)
