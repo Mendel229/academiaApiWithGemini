@@ -1,4 +1,4 @@
-from sqlalchemy import Integer, DateTime, ForeignKey, Boolean, Float
+from sqlalchemy import Integer, DateTime, ForeignKey, Boolean, Numeric
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql import func
 from datetime import datetime
@@ -54,22 +54,19 @@ class CopieNumerique(CopieNumeriqueBase):
 class CopieNumeriqueDB(Base):
     __tablename__ = "copie_numerique"
 
-    id_copie_numerique: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    id_copie_numerique: Mapped[int] = mapped_column(primary_key=True, index=True)
+    note_finale: Mapped[Optional[float]] = mapped_column(Numeric, nullable=True)
+    statut: Mapped[Optional[bool]] = mapped_column(Boolean, server_default="false", nullable=True)
+    created_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=True)
+    updated_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=True)
     id_etudiant: Mapped[int] = mapped_column(ForeignKey("etudiant.id"), nullable=False)
     id_epreuve: Mapped[int] = mapped_column(ForeignKey("epreuve.id_epreuve"), nullable=False)
 
-    note_finale: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
-    statut: Mapped[bool] = mapped_column(Boolean, default=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
-    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=func.now(), onupdate=func.now())
-
     etudiant: Mapped["EtudiantDB"] = relationship("EtudiantDB", back_populates="copies_numeriques")
     epreuve: Mapped["EpreuveDB"] = relationship("EpreuveDB", back_populates="copies_numeriques")
-
     reponses: Mapped[List["ReponseEleveDB"]] = relationship(
-    "ReponseEleveDB", back_populates="copie_numerique", cascade="all, delete-orphan"
+        "ReponseEleveDB", back_populates="copie_numerique", cascade="all, delete-orphan"
     )
-
 
 
 class SoumissionCopieNumerique(BaseModel):

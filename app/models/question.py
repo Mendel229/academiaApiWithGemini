@@ -1,4 +1,3 @@
-# app/models/question.py
 from sqlalchemy import String, ForeignKey, Text, ARRAY, TIMESTAMP, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import List, Optional, TYPE_CHECKING
@@ -48,5 +47,5 @@ class QuestionDB(Base):
         "BonneReponseDB", back_populates="question", cascade="all, delete-orphan"
     )
     reponses_eleve: Mapped[List["ReponseEleveDB"]] = relationship(
-    "ReponseEleveDB", back_populates="question", cascade="all, delete-orphan"
+        "ReponseEleveDB", back_populates="question", cascade="all, delete-orphan"
     )

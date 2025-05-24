@@ -38,10 +38,10 @@ class ReponseEleveDB(Base):
     id_reponse_eleve: Mapped[int] = mapped_column(primary_key=True, index=True)
     reponse_choisie: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     reponse_libre: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=func.now())
+    created_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=True)
 
-    id_copie_numerique: Mapped[int] = mapped_column(ForeignKey("copie_numerique.id_copie_numerique"), nullable=False)
-    id_question: Mapped[int] = mapped_column(ForeignKey("question.id_question"), nullable=False)
+    id_copie_numerique: Mapped[Optional[int]] = mapped_column(ForeignKey("copie_numerique.id_copie_numerique"), nullable=True)
+    id_question: Mapped[Optional[int]] = mapped_column(ForeignKey("question.id_question"), nullable=True)
 
     # Relations
     copie_numerique: Mapped["CopieNumeriqueDB"] = relationship(back_populates="reponses")

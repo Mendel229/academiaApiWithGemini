@@ -1,4 +1,4 @@
-from sqlalchemy import String, ForeignKey, Numeric, TIMESTAMP, func
+from sqlalchemy import String, ForeignKey, Numeric, TIMESTAMP, func, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import TYPE_CHECKING, Optional
 from pydantic import BaseModel
@@ -34,9 +34,9 @@ class BonneReponseDB(Base):
     __tablename__ = "bonne_reponse"
 
     id_bonne_reponse: Mapped[int] = mapped_column(primary_key=True, index=True)
-    bonne_reponse: Mapped[str] = mapped_column(String, nullable=False)
-    bareme: Mapped[float] = mapped_column(Numeric(5, 2), default=1.0)
-    created_at: Mapped[datetime] = mapped_column(TIMESTAMP(timezone=True), server_default=func.now(), nullable=False)
+    bonne_reponse: Mapped[str] = mapped_column(Text, nullable=False)
+    bareme: Mapped[Optional[float]] = mapped_column(Numeric(5, 2), default=1.0)
+    created_at: Mapped[Optional[datetime]] = mapped_column(TIMESTAMP(), server_default=func.now())
     id_question: Mapped[int] = mapped_column(ForeignKey("question.id_question"), nullable=False)
 
     # Relation vers la question
