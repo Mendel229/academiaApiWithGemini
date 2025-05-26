@@ -1,5 +1,5 @@
 from sqlalchemy import String, Integer
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import Optional
 from pydantic import BaseModel
 from app.models.base import Base
@@ -13,6 +13,7 @@ class ExamServiceDB(Base):
     password: Mapped[str] = mapped_column(String, nullable=False)
     roles: Mapped[Optional[str]] = mapped_column(String, nullable=True)
 
+    affectations = relationship("AffectationEpreuveDB", back_populates="assigner")
 # Pydantic Schemas
 class ExamServiceBase(BaseModel):
     login: str

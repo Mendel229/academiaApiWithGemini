@@ -30,6 +30,7 @@ class SessionExamenDB(Base):
         onupdate=func.now(),
         nullable=False
     )
+    
 
 # Pydantic schemas
 from pydantic import BaseModel, ConfigDict

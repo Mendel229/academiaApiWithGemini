@@ -47,5 +47,5 @@ class EpreuveDB(Base):
     # Relations
     questions: Mapped[List["QuestionDB"]] = relationship("QuestionDB", back_populates="epreuve", cascade="all, delete")
     copies_numeriques = relationship("CopieNumeriqueDB", back_populates="epreuve", cascade="all, delete")
-
+    
 

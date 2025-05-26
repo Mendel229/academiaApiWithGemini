@@ -40,4 +40,4 @@ class OptionEtudeDB(Base):
 
     filiere = relationship("FiliereDB", back_populates="options_etude")
     enseignements = relationship("EnseignementDB", back_populates="option_etude")
-
+    

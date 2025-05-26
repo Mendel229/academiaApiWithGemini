@@ -1,7 +1,10 @@
 from sqlalchemy import DateTime, Integer, Date, Time, String, Text, ForeignKey
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column, relationship, configure_mappers
 from sqlalchemy.sql import func
 from datetime import datetime
+from app.models.exam_service import ExamServiceDB
+
+
 
 from app.models.base import Base
 
@@ -63,11 +66,11 @@ class AffectationEpreuveDB(Base):
     )
 
     # relationships (optionnel si besoin d'accès)
-    session_examen = relationship("SessionExamenDB", back_populates="affectations")
-    matiere = relationship("MatiereDB", back_populates="affectations")
-    option_etude = relationship("OptionEtudeDB", back_populates="affectations")
-    professeur = relationship("ProfesseurDB", back_populates="affectations")
-    epreuve = relationship("EpreuveDB", back_populates="affectation", uselist=False)
+    session_examen = relationship("SessionExamenDB")
+    matiere = relationship("MatiereDB")
+    option_etude = relationship("OptionEtudeDB")
+    professeur = relationship("ProfesseurDB")
+    epreuve = relationship("EpreuveDB", uselist=False)
     assigner = relationship("ExamServiceDB", back_populates="affectations")
 
 # Pydantic schemas
@@ -84,7 +87,7 @@ class AffectationEpreuveBase(BaseModel):
     heure_debut_examen: time
     duree_examen_prevue: int
     id_epreuve: int | None = None
-    statut_affectation: str | None = None
+    statut_affectation: str | None = "assignee"
     commentaires_service_examens: str | None = None
     assigned_by: int | None = None
 
@@ -111,3 +114,8 @@ class AffectationEpreuveRead(AffectationEpreuveBase):
     updated_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
+
+try:
+    configure_mappers()
+except:
+    pass

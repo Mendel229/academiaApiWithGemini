@@ -16,5 +16,5 @@ class ProfesseurDB(Base):
     roles: Mapped[Optional[str]] = mapped_column(String, nullable=True)
 
     enseignements = relationship("EnseignementDB", back_populates="professeur")
-
+    
     
