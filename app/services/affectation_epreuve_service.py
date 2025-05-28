@@ -65,16 +65,24 @@ class AffectationEpreuveService:
         self.db.commit()
         return obj
     
-    # Dans AffectationEpreuveService
-def add_epreuve(self, affectation_id: int, epreuve_id: int) -> Optional[AffectationEpreuveDB]:
-    obj = self.get(affectation_id)
-    if not obj:
-        return None
-    
-    if obj.id_epreuve is not None:
-        raise ValueError("Une épreuve est déjà associée à cette affectation")
-    
-    obj.id_epreuve = epreuve_id
-    self.db.commit()
-    self.db.refresh(obj)
-    return obj
+        # Dans AffectationEpreuveService
+    def add_epreuve(self, affectation_id: int, epreuve_id: int) -> Optional[AffectationEpreuveDB]:
+        obj = self.get(affectation_id)
+        if not obj:
+            return None
+        
+        if obj.id_epreuve is not None:
+            raise ValueError("Une épreuve est déjà associée à cette affectation")
+        
+        obj.id_epreuve = epreuve_id
+        self.db.commit()
+        self.db.refresh(obj)
+        return obj
+
+        
+    def list_by_professeur(self, id_professeur: int) -> List[AffectationEpreuveDB]:
+        return (
+            self.db.query(AffectationEpreuveDB)
+            .filter(AffectationEpreuveDB.id_professeur == id_professeur)
+            .all()
+        )

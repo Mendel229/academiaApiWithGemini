@@ -10,6 +10,7 @@ from app.models.affectation_epreuve import (
 )
 from app.services.affectation_epreuve_service import AffectationEpreuveService
 from app.utils.format_reponse import create_response
+from app.models.professeur import ProfesseurDB
 
 router = APIRouter(
     prefix="/api/exam-service/affectations",
@@ -93,3 +94,19 @@ def add_epreuve_to_affectation(
         return create_response(True, 200, payload)
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
+    
+@router.get("/by-professeur/{id_professeur}", response_model=list[AffectationEpreuveRead])
+def list_affectations_by_professeur(id_professeur: int, db: Session = Depends(get_db)):
+    # Vérifie si le professeur existe
+    professeur = db.query(ProfesseurDB).filter(ProfesseurDB.id == id_professeur).first()
+    if not professeur:
+        raise HTTPException(status_code=404, detail="Professeur non trouvé")
+
+    service = AffectationEpreuveService(db)
+    items = service.list_by_professeur(id_professeur)
+
+    if not items:
+        return create_response(True, 200, [], message="Aucune affectation trouvée pour ce professeur")
+
+    payload = jsonable_encoder(items)
+    return create_response(True, 200, payload)
