@@ -72,8 +72,8 @@ class CopieNumeriqueDB(Base):
 class SoumissionCopieNumerique(BaseModel):
     id_etudiant: int
     id_epreuve: int
-    reponses_qcm: Dict[int, str]       # id_question: réponse choisie
-    reponses_code: List[str]           # Réponses dans l’ordre des questions code
-    reponses_courtes: List[str]        # Réponses dans l’ordre des questions ouvertes
+    reponses_qcm: Optional[Dict[int, Optional[str]]] = None
+    reponses_code: Optional[Dict[int, Optional[str]]] = None
+    reponses_courtes: Optional[List[Optional[str]]] = None
 
 
