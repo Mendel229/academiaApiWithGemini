@@ -16,6 +16,9 @@ class CopieNumeriqueService:
     def __init__(self, db: Session):
         self.db = db
 
+    def lire_tous(self):
+        copies = self.db.query(CopieNumeriqueDB).all()
+        return [copies]
     def enregistrer_copie_numerique(self, copie_in: CopieNumeriqueCreate) -> CopieNumerique:
         # Vérifier si l'étudiant existe
         etudiant = self.db.query(EtudiantDB).filter(EtudiantDB.id == copie_in.id_etudiant).first()
